@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>阅读小超人 - 趣味阅读速度测试</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+</head>
+<body>
+    <div class="app-container">
+        <div id="welcome-screen" class="screen active">
+            <h1 class="animate__animated animate__bounceIn">阅读小超人</h1>
+            <div class="mascot animate__animated animate__tada">
+                <img src="images/mascot.svg" alt="阅读小超人吉祥物">
+            </div>
+            <p class="subtitle">测一测你的阅读速度，成为阅读小超人！</p>
+            <div class="grade-selection">
+                <p>请选择你的年级：</p>
+                <div class="grade-buttons">
+                    <button class="grade-btn" data-grade="3">三年级</button>
+                    <button class="grade-btn" data-grade="4">四年级</button>
+                    <button class="grade-btn" data-grade="5">五年级</button>
+                    <button class="grade-btn" data-grade="6">六年级</button>
+                </div>
+            </div>
+            <button id="start-btn" class="primary-btn" disabled>开始测试</button>
+        </div>
+
+        <div id="instruction-screen" class="screen">
+            <h2>测试说明</h2>
+            <div class="instruction-content">
+                <p>1. 接下来你将看到一篇适合你年级的短文</p>
+                <p>2. 认真阅读短文内容，阅读完成后点击"阅读完成"按钮</p>
+                <p>3. 然后回答几个简单问题，检验你的理解程度</p>
+                <p>4. 系统会根据你的阅读时间和答题正确率给出评价</p>
+                <p>5. 尽力而为，不要着急，重要的是理解内容！</p>
+            </div>
+            <div class="mascot-small">
+                <img src="images/mascot-reading.svg" alt="阅读中的吉祥物">
+            </div>
+            <button id="begin-test-btn" class="primary-btn">我准备好了！</button>
+        </div>
+
+        <div id="reading-screen" class="screen">
+            <div class="timer-container">
+                <div class="timer-icon">⏱️</div>
+                <div id="timer">00:00</div>
+            </div>
+            <div id="reading-content" class="reading-content">
+                <!-- 阅读内容将通过JavaScript动态加载 -->
+            </div>
+            <button id="finish-reading-btn" class="primary-btn">阅读完成</button>
+        </div>
+
+        <div id="quiz-screen" class="screen">
+            <h2>理解检测</h2>
+            <div id="quiz-container">
+                <!-- 问题将通过JavaScript动态加载 -->
+            </div>
+            <button id="submit-answers-btn" class="primary-btn">提交答案</button>
+        </div>
+
+        <div id="result-screen" class="screen">
+            <h2 class="animate__animated animate__bounceIn">测试结果</h2>
+            <div class="result-container">
+                <div class="result-item">
+                    <div class="result-icon">⏱️</div>
+                    <div class="result-label">阅读时间</div>
+                    <div id="reading-time" class="result-value">--:--</div>
+                </div>
+                <div class="result-item">
+                    <div class="result-icon">📝</div>
+                    <div class="result-label">正确率</div>
+                    <div id="accuracy" class="result-value">--%</div>
+                </div>
+                <div class="result-item">
+                    <div class="result-icon">🚀</div>
+                    <div class="result-label">阅读速度</div>
+                    <div id="reading-speed" class="result-value">-- 字/分钟</div>
+                </div>
+            </div>
+            <div id="result-message" class="result-message">
+                <!-- 结果评价将通过JavaScript动态加载 -->
+            </div>
+            <div class="result-badge animate__animated animate__zoomIn">
+                <img id="badge-image" src="images/badge-bronze.svg" alt="成就徽章">
+                <div id="badge-title">阅读新手</div>
+            </div>
+            <div class="action-buttons">
+                <button id="try-again-btn" class="secondary-btn">再测一次</button>
+                <button id="share-btn" class="primary-btn">分享成绩</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/data.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>

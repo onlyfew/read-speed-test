@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+  <!-- 外圈 -->
+  <circle cx="100" cy="100" r="90" fill="#ffd700" />
+  <circle cx="100" cy="100" r="80" fill="#ffeb3b" />
+  <!-- 内圈 -->
+  <circle cx="100" cy="100" r="70" fill="#ffd700" />
+  <!-- 星星 -->
+  <path d="M100 30 L113 70 H155 L120 95 L135 140 L100 115 L65 140 L80 95 L45 70 H87 Z" fill="#fff" stroke="#ffd700" stroke-width="2" />
+  <!-- 书本图标 -->
+  <rect x="60" cy="100" width="80" height="10" fill="#fff" />
+  <rect x="60" cy="110" width="80" height="30" fill="#fff" />
+  <path d="M100 110 L100 140" stroke="#ffd700" stroke-width="2" />
+  <!-- 光芒 -->
+  <path d="M100 20 L100 5" stroke="#fff" stroke-width="3" />
+  <path d="M135 35 L145 20" stroke="#fff" stroke-width="3" />
+  <path d="M165 65 L180 55" stroke="#fff" stroke-width="3" />
+  <path d="M165 135 L180 145" stroke="#fff" stroke-width="3" />
+  <path d="M135 165 L145 180" stroke="#fff" stroke-width="3" />
+  <path d="M65 165 L55 180" stroke="#fff" stroke-width="3" />
+  <path d="M35 135 L20 145" stroke="#fff" stroke-width="3" />
+  <path d="M35 65 L20 55" stroke="#fff" stroke-width="3" />
+  <path d="M65 35 L55 20" stroke="#fff" stroke-width="3" />
+</svg>
