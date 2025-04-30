@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>阅读能力体系 - 3D星系可视化</title>
+    <link rel="stylesheet" href="galaxy_ability_map.css">
+    <!-- Three.js库 -->
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/build/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/examples/js/controls/OrbitControls.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/examples/js/loaders/FontLoader.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/examples/js/geometries/TextGeometry.js"></script>
+</head>
+<body>
+    <div class="container">
+        <!-- <header>
+            <h1>阅读能力与方法体系</h1>
+            <p class="subtitle">3D星系可视化 - 探索阅读能力宇宙</p>
+        </header> -->
+
+        <div class="controls">
+            <div class="search-box">
+                <input type="text" id="search-input" placeholder="搜索能力点...">
+                <button id="search-btn">搜索</button>
+            </div>
+            <div class="view-controls">
+                <button id="reset-view">重置视图</button>
+                <button id="toggle-simulation">暂停物理模拟</button>
+                <button id="explode-view">爆炸视图</button>
+                <div class="slider-container">
+                    <label for="link-opacity">连接线透明度</label>
+                    <input type="range" id="link-opacity" min="0" max="1" step="0.1" value="0.6">
+                </div>
+            </div>
+        </div>
+
+        <div class="galaxy-container">
+            <div id="galaxy-scene"></div>
+            <div id="node-info" class="hidden">
+                <div class="info-content">
+                    <h3 id="info-title">节点信息</h3>
+                    <p id="info-description"></p>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p>© 2023 阅读能力体系 - 3D星系可视化</p>
+        </footer>
+    </div>
+
+    <script src="galaxy_ability_map.js"></script>
+</body>
+</html>
