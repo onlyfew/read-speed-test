@@ -536,12 +536,26 @@ function createNodesAndLinks() {
         
         // 创建连接线几何体
         const geometry = new THREE.BufferGeometry();
+        
+        // 使用发光材质，确保在任何缩放级别下连线都清晰可见
         const material = new THREE.LineBasicMaterial({
             color: new THREE.Color(color),
             transparent: true,
             opacity: linkOpacity,
-            linewidth: 1
+            linewidth: 1,
+            depthTest: false, // 禁用深度测试，确保线条始终可见
+            depthWrite: false, // 禁用深度写入，防止被其他对象遮挡
+            fog: false // 禁用雾效果，确保在远距离也可见
         });
+        
+        // 添加辉光效果，使连线在放大时更加明显
+        material.onBeforeCompile = (shader) => {
+            shader.fragmentShader = shader.fragmentShader.replace(
+                'gl_FragColor = vec4( outgoingLight, diffuseColor.a );',
+                'gl_FragColor = vec4( outgoingLight, diffuseColor.a );\
+                gl_FragColor.rgb += outgoingLight * 0.3;'
+            );
+        };
         
         // 初始化顶点位置
         const positions = new Float32Array(6); // 两个点，每个点xyz坐标
@@ -679,9 +693,9 @@ function updateLabels() {
                     // 其他深度的节点根据距离动态调整可见性
                     // 设置不同深度节点的可见距离阈值
                     const visibilityThresholds = {
-                        2: 800,  // 二级节点在较近距离可见
-                        3: 400,  // 三级节点需要更近的距离才可见
-                        4: 300    // 四级及更深节点在非常近的距离可见
+                        2: 500,  // 二级节点在较近距离可见
+                        3: 100,  // 三级节点需要更近的距离才可见
+                        4: 80    // 四级及更深节点在非常近的距离可见
                     };
                     
                     // 获取当前节点深度的可见阈值，如果没有特定设置则使用最后一个值
@@ -1361,7 +1375,7 @@ function animate() {
             }
         });
         
-        // 更新连接线位置
+        // 更新连接线位置和可见性
         links.forEach(link => {
             // 处理link.source和link.target可能是对象或ID的情况
             const sourceId = typeof link.source === 'object' ? link.source.id : link.source;
@@ -1384,6 +1398,26 @@ function animate() {
                     positions[5] = targetObj.position.z;
                     
                     line.geometry.attributes.position.needsUpdate = true;
+                    
+                    // 计算连线中点到相机的距离
+                    const midPoint = new THREE.Vector3(
+                        (sourceObj.position.x + targetObj.position.x) / 2,
+                        (sourceObj.position.y + targetObj.position.y) / 2,
+                        (sourceObj.position.z + targetObj.position.z) / 2
+                    );
+                    const distanceToCamera = camera.position.distanceTo(midPoint);
+                    
+                    // 确保连线在任何缩放级别下都保持可见
+                    // 根据相机距离动态调整不透明度，距离越远不透明度越高
+                    // 这样在放大时连线不会消失
+                    const minOpacity = 0.3; // 最小不透明度
+                    const maxOpacity = 1.0; // 最大不透明度
+                    const distanceFactor = Math.min(1, distanceToCamera / 1000);
+                    const dynamicOpacity = minOpacity + (maxOpacity - minOpacity) * distanceFactor;
+                    
+                    // 更新线条不透明度，确保始终可见
+                    line.material.opacity = Math.max(linkOpacity, dynamicOpacity);
+                    line.material.visible = true; // 确保线条始终可见
                 }
             }
         });
