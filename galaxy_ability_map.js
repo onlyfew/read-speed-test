@@ -542,20 +542,24 @@ function createNodesAndLinks() {
             color: new THREE.Color(color),
             transparent: true,
             opacity: linkOpacity,
-            linewidth: 1,
+            linewidth: 2, // 增加线宽，使连线更明显
             depthTest: false, // 禁用深度测试，确保线条始终可见
             depthWrite: false, // 禁用深度写入，防止被其他对象遮挡
-            fog: false // 禁用雾效果，确保在远距离也可见
+            fog: false, // 禁用雾效果，确保在远距离也可见
+            blending: THREE.AdditiveBlending, // 使用加法混合模式增强可见性
+            toneMapped: false // 禁用色调映射，保持原始亮度
         });
         
         // 添加辉光效果，使连线在放大时更加明显
         material.onBeforeCompile = (shader) => {
             shader.fragmentShader = shader.fragmentShader.replace(
                 'gl_FragColor = vec4( outgoingLight, diffuseColor.a );',
-                'gl_FragColor = vec4( outgoingLight, diffuseColor.a );\
-                gl_FragColor.rgb += outgoingLight * 0.3;'
+                'gl_FragColor = vec4( outgoingLight, diffuseColor.a );\                gl_FragColor.rgb += outgoingLight * 0.5;' // 增强辉光效果
             );
         };
+        
+        // 设置渲染顺序，确保连线在其他对象之上渲染
+        material.renderOrder = 1;
         
         // 初始化顶点位置
         const positions = new Float32Array(6); // 两个点，每个点xyz坐标
@@ -1302,6 +1306,12 @@ function updateLinkOpacity() {
     for (const key in linkObjects) {
         const line = linkObjects[key];
         line.material.opacity = linkOpacity;
+        
+        // 确保连接线的渲染顺序和其他属性保持不变
+        line.material.renderOrder = 1;
+        line.material.depthTest = false;
+        line.material.depthWrite = false;
+        line.material.needsUpdate = true; // 确保材质更新
     }
 }
 
