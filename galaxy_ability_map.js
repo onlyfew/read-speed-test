@@ -1,6 +1,6 @@
 // 阅读能力体系数据
 const readingAbilityData = {
-    name: "阅读能力成长体系",
+    name: "我的阅读能力图谱",
     children: [
         {
             name: "解码与提取",
@@ -171,11 +171,14 @@ let nodeObjects = {}, linkObjects = {};
 let raycaster, mouse, intersectedObject;
 let particleSystem;
 let isSimulationRunning = true;
-let linkOpacity = 0.6;
+let linkOpacity = 1.0;
 let leafNodeIds = []; // 存储所有末级节点的ID
 
 // 初始化
 document.addEventListener('DOMContentLoaded', function() {
+    // 初始化主题
+    initTheme();
+    
     // 初始化Three.js场景
     initThreeJS();
     
@@ -191,6 +194,64 @@ document.addEventListener('DOMContentLoaded', function() {
     // 开始动画循环
     animate();
 });
+
+// 初始化主题
+function initTheme() {
+    // 从localStorage获取保存的主题偏好
+    const savedTheme = localStorage.getItem('theme');
+    
+    // 如果有保存的主题偏好，则应用它
+    if (savedTheme) {
+        document.documentElement.setAttribute('data-theme', savedTheme);
+    }
+    
+    // 在初始化时应用根节点颜色
+    const currentTheme = document.documentElement.getAttribute('data-theme') || 'dark';
+    // 延迟调用，确保节点已创建
+    setTimeout(() => updateRootNodeColor(currentTheme), 500);
+}
+
+// 切换主题
+function toggleTheme() {
+    // 获取当前主题
+    const currentTheme = document.documentElement.getAttribute('data-theme') || 'dark';
+    
+    // 切换主题
+    const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+    
+    // 应用新主题
+    document.documentElement.setAttribute('data-theme', newTheme);
+    
+    // 保存主题偏好到localStorage
+    localStorage.setItem('theme', newTheme);
+    
+    // 更新根节点颜色
+    updateRootNodeColor(newTheme);
+}
+
+// 更新根节点颜色
+function updateRootNodeColor(theme) {
+    // 查找根节点
+    const rootNode = nodes.find(n => n.depth === 0);
+    if (rootNode && nodeObjects[rootNode.id]) {
+        const rootObj = nodeObjects[rootNode.id];
+        const color = theme === 'light' ? "#333333" : "#ffffff";
+        
+        // 更新材质颜色
+        if (rootObj.material) {
+            rootObj.material.color.set(color);
+            rootObj.material.emissive.set(color);
+        }
+        
+        // 更新发光效果颜色
+        if (rootObj.children && rootObj.children.length > 0) {
+            const glowSphere = rootObj.children[0];
+            if (glowSphere.material && glowSphere.material.uniforms) {
+                glowSphere.material.uniforms.glowColor.value.set(color);
+            }
+        }
+    }
+}
 
 // 初始化Three.js场景
 function initThreeJS() {
@@ -531,7 +592,12 @@ function createTextLabel(node, parent) {
         labelDiv.style.backgroundColor = 'rgba(0,0,0,0.7)';
         labelDiv.style.fontSize = '16px';
         labelDiv.style.fontWeight = 'bold';
-        labelDiv.style.border = '1px solid #ffffff';
+        // 根据当前主题设置边框颜色
+        const currentTheme = document.documentElement.getAttribute('data-theme') || 'dark';
+        const borderColor = currentTheme === 'light' ? '#333333' : '#ffffff';
+        labelDiv.style.border = `1px solid ${borderColor}`;
+        // 根节点标签始终可见
+        labelDiv.style.opacity = '1';
     } else if (node.depth === 1) {
         // 一级节点
         labelDiv.style.backgroundColor = 'rgba(0,0,0,0.7)';
@@ -540,6 +606,17 @@ function createTextLabel(node, parent) {
         // 使用节点对应的颜色作为边框
         const color = getNodeColor(node);
         labelDiv.style.border = `1px solid ${color}`;
+        // 一级节点标签始终可见
+        labelDiv.style.opacity = '1';
+    } else if (node.depth === 2) {
+        // 二级节点
+        labelDiv.style.backgroundColor = 'rgba(0,0,0,0.7)';
+        labelDiv.style.fontSize = '13px';
+        // 使用节点对应的颜色作为边框
+        const color = getNodeColor(node);
+        labelDiv.style.border = `1px solid ${color}`;
+        // 二级节点标签始终可见
+        labelDiv.style.opacity = '1';
     } else {
         // 其他节点
         labelDiv.style.backgroundColor = 'rgba(0,0,0,0.6)';
@@ -587,32 +664,38 @@ function updateLabels() {
                 label.style.opacity = '0';
             }
             
-            // 如果不是当前活跃节点，根据距离动态调整可见性
+            // 如果不是当前活跃节点，根据深度决定标签可见性
             if (obj !== activeNode) {
                 // 根据节点深度和距离调整标签可见性
                 const node = obj.userData.node;
                 
-                // 设置不同深度节点的可见距离阈值
-                const visibilityThresholds = {
-                    0: 1000, // 根节点几乎总是可见
-                    1: 800,  // 一级节点在较远距离可见
-                    2: 400,  // 二级节点在中等距离可见
-                    3: 200,  // 三级节点在较近距离可见
-                    4: 150   // 四级及更深节点在非常近的距离可见
-                };
-                
-                // 获取当前节点深度的可见阈值，如果没有特定设置则使用最后一个值
-                const threshold = visibilityThresholds[node.depth] || visibilityThresholds[4];
-                
-                // 根据距离计算透明度
-                if (distance < threshold) {
-                    // 在阈值范围内，根据距离计算透明度
-                    // 距离越近，透明度越高（越清晰）
-                    const opacity = Math.min(0.9, 1 - (distance / threshold) * 0.5);
-                    label.style.opacity = opacity.toFixed(2);
+                // 根级、第一级和第二级的文本标签始终可见
+                if (node.depth <= 2) {
+                    // 如果在屏幕内，则始终显示
+                    if (!(vector.z > 1 || Math.abs(vector.x) > 1 || Math.abs(vector.y) > 1)) {
+                        label.style.opacity = '1'; // 始终可见
+                    }
                 } else {
-                    // 超出阈值范围，隐藏标签
-                    label.style.opacity = '0';
+                    // 其他深度的节点仍然根据距离动态调整可见性
+                    // 设置不同深度节点的可见距离阈值
+                    const visibilityThresholds = {
+                        3: 200,  // 三级节点在较近距离可见
+                        4: 150   // 四级及更深节点在非常近的距离可见
+                    };
+                    
+                    // 获取当前节点深度的可见阈值，如果没有特定设置则使用最后一个值
+                    const threshold = visibilityThresholds[node.depth] || visibilityThresholds[4];
+                    
+                    // 根据距离计算透明度
+                    if (distance < threshold) {
+                        // 在阈值范围内，根据距离计算透明度
+                        // 距离越近，透明度越高（越清晰）
+                        const opacity = Math.min(0.9, 1 - (distance / threshold) * 0.5);
+                        label.style.opacity = opacity.toFixed(2);
+                    } else {
+                        // 超出阈值范围，隐藏标签
+                        label.style.opacity = '0';
+                    }
                 }
             }
         }
@@ -681,7 +764,9 @@ function getNodeColor(node) {
     }
     
     if (node.depth === 0) {
-        return "#ffffff"; // 根节点为白色
+        // 根据主题设置根节点颜色
+        const currentTheme = document.documentElement.getAttribute('data-theme') || 'dark';
+        return currentTheme === 'light' ? "#333333" : "#ffffff"; // 浅色主题下为黑灰色，深色主题下为白色
     } else if (node.depth === 1) {
         return colorMap[node.name] || "#ff3366";
     } else {
@@ -767,6 +852,36 @@ function createStarTexture() {
 
 // 绑定事件监听器
 function bindEventListeners() {
+    // 工具栏折叠功能
+    const toggleControlsBtn = document.getElementById('toggle-controls');
+    const controlsPanel = document.querySelector('.controls');
+    
+    // 设置初始状态为展开
+    controlsPanel.style.display = 'flex';
+    controlsPanel.style.opacity = '1';
+    
+    toggleControlsBtn.addEventListener('click', function() {
+        if (controlsPanel.style.display !== 'none') {
+            // 折叠工具栏
+            controlsPanel.style.opacity = '0';
+            toggleControlsBtn.textContent = '工具栏 ▲';
+            
+            // 等待过渡效果完成后完全隐藏元素
+            setTimeout(() => {
+                controlsPanel.style.display = 'none';
+            }, 300); // 与CSS过渡时间相匹配
+        } else {
+            // 展开工具栏
+            controlsPanel.style.display = 'flex';
+            // 使用setTimeout确保display更改已应用
+            setTimeout(() => {
+                controlsPanel.style.opacity = '1';
+            }, 10);
+            toggleControlsBtn.textContent = '工具栏 ▼';
+        }
+    });
+
+    
     const galaxyScene = document.getElementById('galaxy-scene');
     
     // 鼠标移动事件
@@ -798,6 +913,7 @@ function bindEventListeners() {
     document.getElementById('reset-view').addEventListener('click', resetView);
     document.getElementById('toggle-simulation').addEventListener('click', toggleSimulation);
     document.getElementById('explode-view').addEventListener('click', explodeView);
+    document.getElementById('toggle-theme').addEventListener('click', toggleTheme);
     document.getElementById('link-opacity').addEventListener('input', updateLinkOpacity);
     
     // 添加键盘事件支持平移
