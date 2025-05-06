@@ -657,6 +657,11 @@ function createTextLabel(node, parent) {
         // 阻止事件冒泡，避免触发画布的点击事件
         event.stopPropagation();
         
+        // 检查标签透明度，低于20%则不触发点击效果
+        if (parseFloat(labelDiv.style.opacity) < 0.2) {
+            return;
+        }
+        
         // 获取关联的节点对象
         const nodeObj = parent;
         const nodeData = node;
