@@ -191,6 +191,9 @@ document.addEventListener('DOMContentLoaded', function() {
     // 绑定事件监听器
     bindEventListeners();
     
+    // 重置视图以显示整个星系图
+    resetView();
+    
     // 开始动画循环
     animate();
 });
@@ -262,7 +265,7 @@ function initThreeJS() {
     const width = document.getElementById('galaxy-scene').clientWidth;
     const height = document.getElementById('galaxy-scene').clientHeight;
     camera = new THREE.PerspectiveCamera(60, width / height, 0.1, 10000);
-    camera.position.z = 500;
+    camera.position.z = 800; // 增加初始距离以显示整个星系图
     
     // 创建渲染器
     renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
@@ -278,7 +281,7 @@ function initThreeJS() {
     controls.panSpeed = 1.2; // 增加平移速度
     controls.screenSpacePanning = true; // 使用屏幕空间平移
     controls.minDistance = 50; // 设置最小缩放距离
-    controls.maxDistance = 1000; // 设置最大缩放距离
+    controls.maxDistance = 1500; // 增加最大缩放距离以便查看全局视图
     controls.zoomToCursor = true; // 启用鼠标指针位置为中心的缩放
     controls.enableRotate = true; // 确保旋转功能启用
     controls.rotateSpeed = 0.8; // 设置旋转速度
@@ -1222,8 +1225,8 @@ function searchNode() {
 
 // 重置视图
 function resetView() {
-    // 重置相机位置
-    camera.position.set(0, 0, 500);
+    // 重置相机位置到更远距离以显示整个星系图
+    camera.position.set(0, 0, 800);
     controls.target.set(0, 0, 0);
     controls.update();
     
