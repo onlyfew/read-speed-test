@@ -624,8 +624,8 @@ function createTextLabel(node, parent) {
         // 使用节点对应的颜色作为边框
         const color = getNodeColor(node);
         labelDiv.style.border = `1px solid ${color}`;
-        // 一级节点标签始终可见
-        labelDiv.style.opacity = '1';
+        // 一级节点标签默认隐藏，将根据距离动态显示
+        labelDiv.style.opacity = '0';
     } else if (node.depth === 2) {
         // 二级节点
         labelDiv.style.backgroundColor = 'rgba(0,0,0,0.7)';
@@ -687,19 +687,20 @@ function updateLabels() {
                 // 根据节点深度和距离调整标签可见性
                 const node = obj.userData.node;
                 
-                // 只有根节点和第一级节点的标签默认可见
-                if (node.depth <= 1) {
+                // 只有根节点的标签默认可见
+                if (node.depth === 0) {
                     // 如果在屏幕内，则始终显示
                     if (!(vector.z > 1 || Math.abs(vector.x) > 1 || Math.abs(vector.y) > 1)) {
                         label.style.opacity = '1'; // 始终可见
                     }
                 } else {
-                    // 其他深度的节点根据距离动态调整可见性
+                    // 其他深度的节点（包括一级节点）根据距离动态调整可见性
                     // 设置不同深度节点的可见距离阈值
                     const visibilityThresholds = {
-                        2: 800,  // 二级节点在较近距离可见
-                        3: 500,  // 三级节点需要更近的距离才可见
-                        4: 80    // 四级及更深节点在非常近的距离可见
+                        1: 900,  // 一级节点在较远距离可见
+                        2: 700,  // 二级节点在较近距离可见
+                        3: 500,   // 三级节点需要更近的距离才可见
+                        4: 80     // 四级及更深节点在非常近的距离可见
                     };
                     
                     // 获取当前节点深度的可见阈值，如果没有特定设置则使用最后一个值
