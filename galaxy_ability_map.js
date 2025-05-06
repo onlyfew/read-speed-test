@@ -647,10 +647,38 @@ function createTextLabel(node, parent) {
     }
     
     labelDiv.style.borderRadius = '4px';
-    labelDiv.style.pointerEvents = 'none';
     labelDiv.style.whiteSpace = 'nowrap';
     labelDiv.style.transition = 'opacity 0.3s';
     labelDiv.style.textShadow = '0 0 3px rgba(0,0,0,0.8)';
+    labelDiv.style.cursor = 'pointer'; // 添加鼠标指针样式
+    
+    // 添加点击事件监听器，实现与节点相同的点击效果
+    labelDiv.addEventListener('click', function(event) {
+        // 阻止事件冒泡，避免触发画布的点击事件
+        event.stopPropagation();
+        
+        // 获取关联的节点对象
+        const nodeObj = parent;
+        const nodeData = node;
+        
+        // 处理标签显示/隐藏
+        if (window.activeNode === nodeObj) {
+            // 如果点击的是当前活跃节点的标签，隐藏其标签
+            hideAllLabels();
+            window.activeNode = null;
+        } else {
+            // 隐藏所有标签，然后显示当前点击节点的标签
+            hideAllLabels();
+            showNodeLabel(nodeObj);
+            window.activeNode = nodeObj;
+        }
+        
+        // 触发爆炸式展开效果
+        explodeNode(nodeData);
+    });
+    
+    // 确保标签可点击
+    labelDiv.style.pointerEvents = 'auto';
     
     // 将标签添加到DOM
     document.getElementById('galaxy-scene').appendChild(labelDiv);
@@ -686,7 +714,7 @@ function updateLabels() {
             }
             
             // 如果不是当前活跃节点，根据深度决定标签可见性
-            if (obj !== activeNode) {
+            if (obj !== window.activeNode) {
                 // 根据节点深度和距离调整标签可见性
                 const node = obj.userData.node;
                 
@@ -1046,7 +1074,7 @@ function resetHighlight(node) {
 }
 
 // 全局变量，用于跟踪当前显示标签的节点
-let activeNode = null;
+window.activeNode = null;
 
 // 鼠标点击事件处理
 function onMouseClick(event) {
@@ -1067,15 +1095,15 @@ function onMouseClick(event) {
         const nodeData = intersectedNode.userData.node;
         
         // 处理标签显示/隐藏
-        if (activeNode === intersectedNode) {
+        if (window.activeNode === intersectedNode) {
             // 如果点击的是当前活跃节点，隐藏其标签
             hideAllLabels();
-            activeNode = null;
+            window.activeNode = null;
         } else {
             // 隐藏所有标签，然后显示当前点击节点的标签
             hideAllLabels();
             showNodeLabel(intersectedNode);
-            activeNode = intersectedNode;
+            window.activeNode = intersectedNode;
         }
         
         // 触发爆炸式展开效果
