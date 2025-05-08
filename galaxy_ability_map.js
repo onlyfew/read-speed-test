@@ -656,6 +656,7 @@ function createTextLabel(node, parent) {
     labelDiv.addEventListener('click', function(event) {
         // 阻止事件冒泡，避免触发画布的点击事件
         event.stopPropagation();
+        event.preventDefault();
         
         // 检查标签透明度，低于20%则不触发点击效果
         if (parseFloat(labelDiv.style.opacity) < 0.2) {
@@ -665,6 +666,12 @@ function createTextLabel(node, parent) {
         // 获取关联的节点对象
         const nodeObj = parent;
         const nodeData = node;
+        
+        // 防止短时间内多次触发
+        if (nodeObj.userData.isAnimating) {
+            return;
+        }
+        nodeObj.userData.isAnimating = true;
         
         // 处理标签显示/隐藏
         if (window.activeNode === nodeObj) {
@@ -680,16 +687,16 @@ function createTextLabel(node, parent) {
         
         // 触发爆炸式展开效果
         explodeNode(nodeData);
+        
+        // 1秒后重置动画状态标志
+        setTimeout(() => {
+            nodeObj.userData.isAnimating = false;
+        }, 1000);
     });
     
-    // 确保标签可点击
-    labelDiv.style.pointerEvents = 'auto';
+
     
-    // 将标签添加到DOM
-    document.getElementById('galaxy-scene').appendChild(labelDiv);
-    
-    // 存储标签引用到节点对象
-    parent.userData.label = labelDiv;
+
 }
 
 // 更新标签位置
@@ -959,6 +966,26 @@ function bindEventListeners() {
         event.preventDefault();
     });
     
+    // 添加触摸事件处理，防止双指缩放时触发页面缩放
+    galaxyScene.addEventListener('touchstart', function(event) {
+        // 如果有多个触摸点（如双指缩放），阻止默认行为
+        if (event.touches.length > 1) {
+            event.preventDefault();
+        }
+    }, { passive: false });
+    
+    galaxyScene.addEventListener('touchmove', function(event) {
+        // 如果有多个触摸点，阻止默认行为
+        if (event.touches.length > 1) {
+            event.preventDefault();
+        }
+    }, { passive: false });
+    
+    galaxyScene.addEventListener('wheel', function(event) {
+        // 阻止滚轮事件冒泡，防止页面滚动
+        event.stopPropagation();
+    });
+    
     // 控制面板事件
     document.getElementById('search-btn').addEventListener('click', searchNode);
     document.getElementById('search-input').addEventListener('keyup', function(event) {
@@ -1099,6 +1126,12 @@ function onMouseClick(event) {
         const intersectedNode = intersects[0].object;
         const nodeData = intersectedNode.userData.node;
         
+        // 防止短时间内多次触发
+        if (intersectedNode.userData.isAnimating) {
+            return;
+        }
+        intersectedNode.userData.isAnimating = true;
+        
         // 处理标签显示/隐藏
         if (window.activeNode === intersectedNode) {
             // 如果点击的是当前活跃节点，隐藏其标签
@@ -1113,6 +1146,11 @@ function onMouseClick(event) {
         
         // 触发爆炸式展开效果
         explodeNode(nodeData);
+        
+        // 1秒后重置动画状态标志
+        setTimeout(() => {
+            intersectedNode.userData.isAnimating = false;
+        }, 1000);
     } else {
         // 点击空白区域，隐藏所有标签
         hideAllLabels();
