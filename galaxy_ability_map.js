@@ -807,9 +807,9 @@ function hideAllLabels() {
 // 获取节点大小
 function getNodeSize(node) {
     // 根据深度和子节点数量确定大小
-    const baseSize = 5 - node.depth * 0.8;
-    const childBonus = node.children ? Math.min(node.children, 10) * 0.3 : 0;
-    return Math.max(baseSize + childBonus, 1.5);
+    const baseSize = 10 - node.depth * 1.6; // 基础大小增加一倍
+    const childBonus = node.children ? Math.min(node.children, 10) * 0.6 : 0; // 子节点奖励系数增加一倍
+    return Math.max(baseSize + childBonus, 3); // 最小节点大小增加一倍
 }
 
 // 获取节点颜色
