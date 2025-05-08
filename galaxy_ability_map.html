@@ -12,6 +12,8 @@
 
     <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/examples/js/loaders/FontLoader.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/examples/js/geometries/TextGeometry.js"></script>
+    <!-- 进度条功能 -->
+    <script src="progress_bar.js"></script>
 </head>
 <body>
     <div class="container">
@@ -47,6 +49,15 @@
                     <h3 id="info-title">节点信息</h3>
                     <p id="info-description"></p>
                 </div>
+            </div>
+            
+            <!-- 添加进度条浮层 -->
+            <div id="mastery-progress-container">
+                <div class="progress-label">点亮进度：</div>
+                <div class="progress-bar-container">
+                    <div id="mastery-progress-bar"></div>
+                </div>
+                <div id="mastery-percentage">0%</div>
             </div>
         </div>
 

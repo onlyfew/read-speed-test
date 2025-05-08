@@ -194,6 +194,9 @@ document.addEventListener('DOMContentLoaded', function() {
     // 重置视图以显示整个星系图
     resetView();
     
+    // 添加进度条样式
+    addProgressBarStyles();
+    
     // 开始动画循环
     animate();
 });
@@ -446,6 +449,9 @@ function createNodesAndLinks() {
             masteredAbilityIds.push(nodeId);
         }
     }
+    
+    // 更新进度条显示
+    updateMasteryProgress();
     
     // 创建节点
     nodes.forEach(node => {
