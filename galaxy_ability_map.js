@@ -694,9 +694,12 @@ function createTextLabel(node, parent) {
         }, 1000);
     });
     
-
+    // 将标签添加到DOM中
+    document.getElementById('galaxy-scene').appendChild(labelDiv);
     
-
+    // 将标签与节点对象关联
+    parent.userData.label = labelDiv;
+    parent.userData.node = node;
 }
 
 // 更新标签位置
