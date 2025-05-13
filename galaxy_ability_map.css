@@ -10,26 +10,7 @@
     --transition: all 0.3s ease;
     --font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
     
-    /* 浅色主题（默认） */
-    --bg-color: #d1d4e5;
-    --text-color: #333333;
-    --header-bg: linear-gradient(135deg, rgba(255, 51, 102, 0.7), rgba(0, 204, 255, 0.7));
-    --controls-bg: rgba(240, 240, 250, 0.7);
-    --galaxy-bg: rgba(240, 240, 250, 0.5);
-    --input-bg: rgba(0, 0, 0, 0.05);
-    --input-text: #333333;
-    --button-bg: rgba(255, 51, 102, 0.7);
-    --button-hover: rgba(255, 51, 102, 1);
-    --slider-bg: rgba(255, 255, 255, 0.2);
-    --slider-thumb: #ffffff;
-    --node-info-bg: rgba(0, 0, 0, 0.7);
-    --node-info-border: rgba(255, 255, 255, 0.1);
-    --footer-text: rgba(255, 255, 255, 0.6);
-    --shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-}
-
-/* 深色主题 */
-[data-theme="dark"] {
+    /* 深色主题（默认） */
     --bg-color: #1a1a2e;
     --text-color: #ffffff;
     --header-bg: linear-gradient(135deg, rgba(255, 51, 102, 0.8), rgba(0, 204, 255, 0.8));
@@ -45,6 +26,25 @@
     --node-info-border: rgba(255, 255, 255, 0.1);
     --footer-text: rgba(255, 255, 255, 0.6);
     --shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+/* 浅色主题 */
+[data-theme="light"] {
+    --bg-color: #f8f9fc;
+    --text-color: #333333;
+    --header-bg: linear-gradient(135deg, rgba(255, 51, 102, 0.7), rgba(0, 204, 255, 0.7));
+    --controls-bg: rgba(240, 240, 250, 0.7);
+    --galaxy-bg: rgba(240, 240, 250, 0.5);
+    --input-bg: rgba(0, 0, 0, 0.05);
+    --input-text: #333333;
+    --button-bg: rgba(255, 51, 102, 0.7);
+    --button-hover: rgba(255, 51, 102, 0.9);
+    --slider-bg: rgba(0, 0, 0, 0.2);
+    --slider-thumb: #ff3366;
+    --node-info-bg: rgba(255, 255, 255, 0.9);
+    --node-info-border: rgba(0, 0, 0, 0.1);
+    --footer-text: rgba(0, 0, 0, 0.6);
+    --shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
 }
 
 * {

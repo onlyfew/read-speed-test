@@ -48,8 +48,8 @@ const readingAbilityData = {
                 {
                     name: "概括大意",
                     children: [
-                        { name: "借助插图，概括大意" },
                         { name: "借助关键信息，概括大意" },
+                        { name: "借助插图，概括大意" },
                         { name: "借助图片，概括大意" },
                         { name: "联系生活，概括大意" },
                         { name: "运用串联段意的方法，概括大意" },
@@ -61,7 +61,7 @@ const readingAbilityData = {
             ]
         },
         {
-            name: "解释与延展",
+            name: "解释与推论",
             children: [
                 {
                     name: "理解隐含信息",
@@ -218,7 +218,7 @@ let nodeObjects = {}, linkObjects = {};
 let raycaster, mouse, intersectedObject;
 let particleSystem;
 let isSimulationRunning = true;
-let linkOpacity = 1;
+let linkOpacity = 1.0;
 let leafNodeIds = []; // 存储所有末级节点的ID
 
 // 初始化
@@ -246,8 +246,6 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // 开始动画循环
     animate();
-
-    // toggleTheme();
 });
 
 // 初始化主题
@@ -285,20 +283,18 @@ function toggleTheme() {
     updateRootNodeColor(newTheme);
 }
 
-// 更新主题相关的节点颜色
+// 更新根节点颜色
 function updateRootNodeColor(theme) {
-    // 更新根节点
+    // 查找根节点
     const rootNode = nodes.find(n => n.depth === 0);
     if (rootNode && nodeObjects[rootNode.id]) {
         const rootObj = nodeObjects[rootNode.id];
-        const color = theme === 'light' ? "#ffffff" : "#333333";
+        const color = theme === 'light' ? "#333333" : "#ffffff";
         
         // 更新材质颜色
         if (rootObj.material) {
             rootObj.material.color.set(color);
             rootObj.material.emissive.set(color);
-            // 确保在浅色模式下没有黑色边框
-            rootObj.material.flatShading = false;
         }
         
         // 更新发光效果颜色
@@ -309,16 +305,6 @@ function updateRootNodeColor(theme) {
             }
         }
     }
-    
-    // 更新所有节点的材质属性，确保在浅色模式下没有黑色边框
-    nodes.forEach(node => {
-        const nodeObj = nodeObjects[node.id];
-        if (nodeObj && nodeObj.material) {
-            // 确保所有节点在浅色模式下没有黑色边框
-            nodeObj.material.flatShading = false;
-            nodeObj.material.needsUpdate = true;
-        }
-    });
 }
 
 // 初始化Three.js场景
@@ -527,13 +513,7 @@ function createNodesAndLinks() {
             color: new THREE.Color(color),
             emissive: new THREE.Color(color),
             emissiveIntensity: node.depth === 3 && !masteredAbilityIds.includes(node.id) ? 0.2 : 0.5, // 未掌握的节点发光较弱
-            shininess: 100,
-            wireframe: false,
-            flatShading: false, // 关闭平面着色，避免边缘锐化
-            transparent: true,
-            opacity: 1.0,
-            depthWrite: true,
-            side: THREE.FrontSide // 只渲染正面
+            shininess: 100
         });
         
         const sphere = new THREE.Mesh(geometry, material);
@@ -565,8 +545,7 @@ function createNodesAndLinks() {
                 varying float intensity;
                 void main() {
                     vec3 glow = glowColor * intensity;
-                    // 使用强度值作为透明度，使边缘更加柔和
-                    gl_FragColor = vec4(glow, intensity * 0.8);
+                    gl_FragColor = vec4(glow, 1.0);
                 }
             `,
             side: THREE.BackSide,
@@ -620,7 +599,7 @@ function createNodesAndLinks() {
             color: new THREE.Color(color),
             transparent: true,
             opacity: linkOpacity,
-            linewidth: 10, // 增加线宽，使连线更明显
+            linewidth: 2, // 增加线宽，使连线更明显
             depthTest: false, // 禁用深度测试，确保线条始终可见
             depthWrite: false, // 禁用深度写入，防止被其他对象遮挡
             fog: false, // 禁用雾效果，确保在远距离也可见
@@ -907,7 +886,7 @@ function getNodeColor(node) {
     if (node.depth === 0) {
         // 根据主题设置根节点颜色
         const currentTheme = document.documentElement.getAttribute('data-theme') || 'dark';
-        return currentTheme === 'light' ? "#ffffff" : "#333333"; // 浅色主题下为白色，深色主题下为黑灰色
+        return currentTheme === 'light' ? "#333333" : "#ffffff"; // 浅色主题下为黑灰色，深色主题下为白色
     } else if (node.depth === 1) {
         return colorMap[node.name] || "#ff3366";
     } else {
@@ -1480,11 +1459,11 @@ function getNodeDescription(node) {
             case '整合与概括':
                 return '整合与概括能力帮助读者将分散的信息组织起来，形成对文本的整体理解。这包括梳理思路和概括大意两个关键方面。';
             case '解释与延展':
-                return '解释与延展能力使读者能够理解文本的隐含信息，通过想象力拓展文本内容，体会思想感情，并分析写作意图。';
+                return '解释与延展能力使读者能够理解文本的隐含信息，分析作者的思想感情和写作意图，并通过想象力拓展文本内容。';
             case '鉴赏与评判':
-                return '鉴赏与评判能力让读者能够赏析形象、品析语言和评析结构，是较高层次的阅读能力。';
+                return '鉴赏与评判能力让读者能够欣赏文本的语言和结构表达，并对文本内容进行评价。这是较高层次的阅读能力。';
             case '创意与应用':
-                return '创意与应用是阅读能力的最高层次，包括复述、创意表达，以及运用阅读解决实际问题的能力。';
+                return '创意与应用是阅读能力的最高层次，包括将阅读所得转化为思维表达，以及运用阅读解决实际问题的能力。';
             default:
                 return '这是阅读能力体系的重要组成部分。';
         }
@@ -1496,14 +1475,11 @@ function getNodeDescription(node) {
             '梳理思路': '将文本信息进行分类整理，理清文本逻辑关系的能力。',
             '概括大意': '抓住文本主要内容，提炼中心思想的能力。',
             '理解隐含信息': '理解文本中未明确表达但暗含的信息和意义的能力。',
+            '分析思想感情或写作意图': '理解作者情感态度和写作目的的能力。',
             '想象拓展': '基于文本进行合理想象和延伸思考的能力。',
-            '体会思想感情': '感受和理解作者在文本中表达的情感和态度的能力。',
-            '分析写作意图': '理解作者写作目的和意图的能力。',
-            '赏析形象': '欣赏和分析文本中塑造的人物形象的能力。',
-            '品析语言': '欣赏和评价文本语言运用的能力。',
-            '评析结构': '分析和评价文本结构安排的能力。',
-            '复述': '用自己的话语复述文本内容的能力。',
-            '创意表达': '将阅读所得转化为个人创意表达的能力。',
+            '鉴赏语言与结构表达': '欣赏和评价文本语言运用和结构安排的能力。',
+            '评价文本内容': '对文本内容进行分析、判断和评价的能力。',
+            '思维表达': '将阅读所得转化为个人思考和表达的能力。',
             '解决问题': '运用阅读策略和方法解决实际问题的能力。'
         };
         return descriptions[node.name] || '这是阅读能力的重要组成部分。';
