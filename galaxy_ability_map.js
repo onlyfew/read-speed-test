@@ -8,19 +8,30 @@ const readingAbilityData = {
                 {
                     name: "提取与筛选信息",
                     children: [
-                        { name: "通过重复、有规律的句式，提取核心信息" },
-                        { name: "通过串联因果关系，提取关键词" },
-                        { name: "根据简单提示，提取明显信息" },
-                        { name: "根据生活经验，提取信息" }
+                        { name: "借助外部提示，提取明显信息" },
+                        { name: "运用圈画，提取关键信息" },
+                        { name: "通过景物，提取关键信息" },
+                        { name: "按照叙述顺序，提取关键信息" },
+                        { name: "根据时间线索，提取关键信息" },
+                        { name: "通过事物特点，提取关键信息" },
+                        { name: "抓住事件要素，提取关键信息" },
+                        { name: "抓住主要人物，提取关键信息" },
+                        { name: "通过人物描写，提取关键信息" },
+                        { name: "通过景物描写，提取关键信息" },
+                        { name: "根据阅读目的，提取关键信息" },
+                        { name: "借助关联信息，提取信息" },
+                        { name: "通过重复、有规律的句式，提取核心信息" }
                     ]
                 },
                 {
                     name: "理解字词本意",
                     children: [
+                        { name: "借助插图，理解字词句意思" },
                         { name: "通过文本外的演示，理解词语的意思" },
                         { name: "借助资料，理解字词句意思" },
                         { name: "借助表演，理解字词句的意思" },
-                        { name: "联系近义词或反义词，理解字词句意思" }
+                        { name: "联系近义词或反义词，理解字词句意思" },
+                        { name: "联系上下文，理解字词句的意思" }
                     ]
                 }
             ]
@@ -31,21 +42,27 @@ const readingAbilityData = {
                 {
                     name: "梳理思路",
                     children: [
-                        { name: "借助图片，将关键信息分类" },
-                        { name: "借助关键词，将信息分类" },
-                        { name: "借助逻辑关系，列出信息间的关系" },
-                        { name: "借助关键词，梳理事件的不同阶段" }
+                        { name: "借助关键信息，梳理思路" },
+                        { name: "根据人物，梳理思路" },
+                        { name: "借助图表，梳理思路" },
+                        { name: "根据时间顺序，梳理思路" },
+                        { name: "根据详略安排，梳理思路" }
                     ]
                 },
                 {
                     name: "概括大意",
                     children: [
+                        { name: "借助插图，概括大意" },
                         { name: "借助关键信息，概括大意" },
-                        { name: "通过理解文言文的意思，把握文言文大意" },
+                        { name: "借助图片，概括大意" },
+                        { name: "联系生活，概括大意" },
                         { name: "运用串联段意的方法，概括大意" },
-                        { name: "总结多个事件，把握全文大意" },
                         { name: "通过事件发展顺序，把握全文大意" },
-                        { name: "结合不同方面的描写，把握全文大意" }
+                        { name: "通过主要人物，概括大意" },
+                        { name: "整合提纲，概括大意" },
+                        { name: "借助图表，概括大意" },
+                        { name: "结合资料，概括大意" },
+                        { name: "借助作品梗概，概括大意" }
                     ]
                 }
             ]
@@ -56,36 +73,54 @@ const readingAbilityData = {
                 {
                     name: "理解隐含信息",
                     children: [
-                        { name: "联系上下文，理解字词句在文中的意思" },
-                        { name: "结合生活经验，理解字词句在文中的意思" },
-                        { name: "想象画面，理解字词句在文中的的意思" },
-                        { name: "借助多种资料，理解字词句在文中的意思" },
-                        { name: "结合生活经验，理解词语的隐含意思" },
-                        { name: "综合多种角度，理解文言字词的意思" }
-                    ]
-                },
-                {
-                    name: "分析思想感情或写作意图",
-                    children: [
-                        { name: "联系生活经验，把握思想感情和写作意图" },
-                        { name: "联系上下文，把握思想感情和写作意图" },
-                        { name: "通过想象画面，体会思想感情" },
-                        { name: "通过具体情节描写，体会思想感情" },
-                        { name: "结合具体描写，体会思想感情" },
-                        { name: "综合多个方面，体会思想感情" },
-                        { name: "借助抒情，把握思想感情和写作意图" },
-                        { name: "借助资料，把握思想感情和写作意图" }
+                        { name: "借助资料，理解字词句的隐含信息" },
+                        { name: "联系上下文，理解字词句的隐含信息" },
+                        { name: "结合生活经验，理解字词句的隐含信息" },
+                        { name: "想象画面，理解字词句的隐含信息" },
+                        { name: "借助关键词句，理解字词句的隐含信息" },
+                        { name: "借助描写，理解字词句的隐含信息" }
                     ]
                 },
                 {
                     name: "想象拓展",
                     children: [
-                        { name: "根据插图，想象画面" },
-                        { name: "根据文字描述，想象画面" },
-                        { name: "联系生活经验，想象画面" },
-                        { name: "联系生活经验，想象画面与情感" },
-                        { name: "联系生活经验，想象画面与意境" },
-                        { name: "结合多种背景资料，想象画面、情感与意境" }
+                        { name: "借助关键信息，展开想象" },
+                        { name: "联系生活经验，展开想象" },
+                        { name: "根据景物，展开想象" },
+                        { name: "通过多角度，展开想象" },
+                        { name: "结合情景，展开想象" },
+                        { name: "借助事件，展开想象" },
+                        { name: "调动多种感官，展开想象" },
+                        { name: "借助描写，展开想象" },
+                        { name: "联系上下文，展开想象" },
+                        { name: "结合资料，展开想象" },
+                        { name: "借助插图，展开想象" },
+                        { name: "根据语言文字，展开想象" }
+                    ]
+                },
+                {
+                    name: "体会思想感情",
+                    children: [
+                        { name: "通过想象画面，体会思想感情" },
+                        { name: "联系生活经验，体会思想感情" },
+                        { name: "联系上下文，体会思想感情" },
+                        { name: "通过描写，体会思想感情" },
+                        { name: "抓住情节，体会思想感情" },
+                        { name: "抓住人物，体会思想感情" },
+                        { name: "借助抒情，体会思想感情" },
+                        { name: "借助资料，体会思想感情" }
+                    ]
+                },
+                {
+                    name: "分析写作意图",
+                    children: [
+                        { name: "联系生活经验，分析写作意图" },
+                        { name: "联系上下文，分析写作意图" },
+                        { name: "通过描写，分析写作意图" },
+                        { name: "抓住情节，分析写作意图" },
+                        { name: "抓住人物，分析写作意图" },
+                        { name: "借助抒情，分析写作意图" },
+                        { name: "借助资料，分析写作意图" }
                     ]
                 }
             ]
@@ -94,29 +129,40 @@ const readingAbilityData = {
             name: "鉴赏与评判",
             children: [
                 {
-                    name: "鉴赏语言与结构表达",
+                    name: "赏析形象",
                     children: [
-                        { name: "通过比较，体会表达效果" },
-                        { name: "通过修辞手法，体会表达效果" },
-                        { name: "通过不同句式，体会表达效果" },
-                        { name: "通过拟声词，体会表达效果" },
-                        { name: "通过表达方式，体会表达效果" },
-                        { name: "通过语言风格，体会表达效果" },
-                        { name: "通过写作手法，体会表达效果" },
-                        { name: "通过说明方法，体会表达效果" },
-                        { name: "通过写作顺序，体会表达效果" },
-                        { name: "通过文章结构，体会表达效果" },
-                        { name: "通过朗读，体会表达效果" }
+                        { name: "抓住对话，赏析形象" },
+                        { name: "借助想象，赏析形象" },
+                        { name: "通过提示语，赏析形象" },
+                        { name: "抓住语言，赏析形象" },
+                        { name: "抓住动作，赏析形象" },
+                        { name: "抓住神态描写，赏析形象" },
+                        { name: "抓住外貌描写，赏析形象" },
+                        { name: "通过人物描写，赏析形象" },
+                        { name: "借助环境描写，赏析形象" },
+                        { name: "抓住情节变化，赏析形象" }
                     ]
                 },
                 {
-                    name: "评价文本内容",
+                    name: "品析语言",
                     children: [
-                        { name: "借助人物，评价赏析文本" },
-                        { name: "借助事件，评价赏析文本" },
-                        { name: "联系生活实际，评价赏析文本" },
-                        { name: "通过比较阅读，评价赏析文本" },
-                        { name: "结合相关资料，评价赏析文本" }
+                        { name: "通过比较阅读，品析语言" },
+                        { name: "通过修辞手法，品析语言" },
+                        { name: "通过体会词句，品析语言" },
+                        { name: "通过表达方法，品析语言" },
+                        { name: "通过表现手法，品析语言" },
+                        { name: "通过说明方法，品析语言" },
+                        { name: "通过事例选取，品析语言" },
+                        { name: "通过朗读，品析语言" }
+                    ]
+                },
+                {
+                    name: "评析结构",
+                    children: [
+                        { name: "通过详略结构评析" },
+                        { name: "通过写作顺序评析" },
+                        { name: "通过逻辑关系评析" },
+                        { name: "通过句式结构评析" }
                     ]
                 }
             ]
@@ -125,23 +171,48 @@ const readingAbilityData = {
             name: "创意与应用",
             children: [
                 {
-                    name: "思维表达",
+                    name: "复述",
                     children: [
-                        { name: "根据文本内容，进行表达" },
-                        { name: "发散想象，进行表达" },
-                        { name: "转换角度，进行表达" },
-                        { name: "通过改编，进行表达" },
-                        { name: "结合资料，进行表达" },
+                        { name: "借助图片" },
+                        { name: "借助提示" },
+                        { name: "运用顺序关联词" },
+                        { name: "借助表格" },
+                        { name: "借助路线图" },
+                        { name: "按一定顺序" },
+                        { name: "用自己的话" },
+                        { name: "根据情节主次" },
+                        { name: "将对话变为转述" },
+                        { name: "变换口吻" },
+                        { name: "添加情节、对话等" },
+                        { name: "模仿人物的动作、表情" },
+                        { name: "综合训练学过的方法" }
+                    ]
+                },
+                {
+                    name: "创意表达",
+                    children: [
+                        { name: "运用积累的词语，进行表达" },
+                        { name: "借助想象，进行表达" },
+                        { name: "运用表现顺序的词语，进行表达" },
+                        { name: "从不同方面写特点，进行表达" },
+                        { name: "围绕关键句，进行表达" },
+                        { name: "按顺序写事，进行表达" },
+                        { name: "运用人物描写，进行表达" },
+                        { name: "搜集资料，进行表达" },
+                        { name: "运用点面结合，进行表达" },
+                        { name: "运用环境描写，进行表达" },
+                        { name: "围绕中心选材，进行表达" },
+                        { name: "联系生活实际，进行表达" },
                         { name: "联系观点，进行表达" }
                     ]
                 },
                 {
                     name: "解决问题",
                     children: [
-                        { name: "通过阅读，解决问题" },
-                        { name: "通过请教，解决问题" },
-                        { name: "通过讨论，解决问题" },
-                        { name: "通过观察记录，解决问题" }
+                        { name: "通过文本内容，解决问题" },
+                        { name: "运用阅读中获得的思维方法，解决问题" },
+                        { name: "通过信息加工，解决问题" },
+                        { name: "通过查找资料，解决问题" }
                     ]
                 }
             ]
@@ -171,7 +242,7 @@ let nodeObjects = {}, linkObjects = {};
 let raycaster, mouse, intersectedObject;
 let particleSystem;
 let isSimulationRunning = true;
-let linkOpacity = 1.0;
+let linkOpacity = 1;
 let leafNodeIds = []; // 存储所有末级节点的ID
 
 // 初始化
@@ -199,12 +270,15 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // 开始动画循环
     animate();
+
+    // toggleTheme();
 });
 
 // 初始化主题
 function initTheme() {
     // 从localStorage获取保存的主题偏好
-    const savedTheme = localStorage.getItem('theme');
+    // const savedTheme = localStorage.getItem('theme');
+    const savedTheme = 'dark';
     
     // 如果有保存的主题偏好，则应用它
     if (savedTheme) {
@@ -235,18 +309,20 @@ function toggleTheme() {
     updateRootNodeColor(newTheme);
 }
 
-// 更新根节点颜色
+// 更新主题相关的节点颜色
 function updateRootNodeColor(theme) {
-    // 查找根节点
+    // 更新根节点
     const rootNode = nodes.find(n => n.depth === 0);
     if (rootNode && nodeObjects[rootNode.id]) {
         const rootObj = nodeObjects[rootNode.id];
-        const color = theme === 'light' ? "#333333" : "#ffffff";
+        const color = theme === 'light' ? "#ffffff" : "#333333";
         
         // 更新材质颜色
         if (rootObj.material) {
             rootObj.material.color.set(color);
             rootObj.material.emissive.set(color);
+            // 确保在浅色模式下没有黑色边框
+            rootObj.material.flatShading = false;
         }
         
         // 更新发光效果颜色
@@ -257,6 +333,16 @@ function updateRootNodeColor(theme) {
             }
         }
     }
+    
+    // 更新所有节点的材质属性，确保在浅色模式下没有黑色边框
+    nodes.forEach(node => {
+        const nodeObj = nodeObjects[node.id];
+        if (nodeObj && nodeObj.material) {
+            // 确保所有节点在浅色模式下没有黑色边框
+            nodeObj.material.flatShading = false;
+            nodeObj.material.needsUpdate = true;
+        }
+    });
 }
 
 // 初始化Three.js场景
@@ -465,7 +551,13 @@ function createNodesAndLinks() {
             color: new THREE.Color(color),
             emissive: new THREE.Color(color),
             emissiveIntensity: node.depth === 3 && !masteredAbilityIds.includes(node.id) ? 0.2 : 0.5, // 未掌握的节点发光较弱
-            shininess: 100
+            shininess: 100,
+            wireframe: false,
+            flatShading: false, // 关闭平面着色，避免边缘锐化
+            transparent: true,
+            opacity: 1.0,
+            depthWrite: true,
+            side: THREE.FrontSide // 只渲染正面
         });
         
         const sphere = new THREE.Mesh(geometry, material);
@@ -497,7 +589,8 @@ function createNodesAndLinks() {
                 varying float intensity;
                 void main() {
                     vec3 glow = glowColor * intensity;
-                    gl_FragColor = vec4(glow, 1.0);
+                    // 使用强度值作为透明度，使边缘更加柔和
+                    gl_FragColor = vec4(glow, intensity * 0.8);
                 }
             `,
             side: THREE.BackSide,
@@ -551,7 +644,7 @@ function createNodesAndLinks() {
             color: new THREE.Color(color),
             transparent: true,
             opacity: linkOpacity,
-            linewidth: 2, // 增加线宽，使连线更明显
+            linewidth: 10, // 增加线宽，使连线更明显
             depthTest: false, // 禁用深度测试，确保线条始终可见
             depthWrite: false, // 禁用深度写入，防止被其他对象遮挡
             fog: false, // 禁用雾效果，确保在远距离也可见
@@ -749,9 +842,9 @@ function updateLabels() {
                     // 其他深度的节点（包括一级节点）根据距离动态调整可见性
                     // 设置不同深度节点的可见距离阈值
                     const visibilityThresholds = {
-                        1: 900,  // 一级节点在较远距离可见
-                        2: 700,  // 二级节点在较近距离可见
-                        3: 500,   // 三级节点需要更近的距离才可见
+                        1: 1200,  // 一级节点在较远距离可见
+                        2: 1000,  // 二级节点在较近距离可见
+                        3: 800,   // 三级节点需要更近的距离才可见
                         4: 80     // 四级及更深节点在非常近的距离可见
                     };
                     
@@ -838,7 +931,7 @@ function getNodeColor(node) {
     if (node.depth === 0) {
         // 根据主题设置根节点颜色
         const currentTheme = document.documentElement.getAttribute('data-theme') || 'dark';
-        return currentTheme === 'light' ? "#333333" : "#ffffff"; // 浅色主题下为黑灰色，深色主题下为白色
+        return currentTheme === 'light' ? "#ffffff" : "#333333"; // 浅色主题下为白色，深色主题下为黑灰色
     } else if (node.depth === 1) {
         return colorMap[node.name] || "#ff3366";
     } else {
@@ -1411,11 +1504,11 @@ function getNodeDescription(node) {
             case '整合与概括':
                 return '整合与概括能力帮助读者将分散的信息组织起来，形成对文本的整体理解。这包括梳理思路和概括大意两个关键方面。';
             case '解释与延展':
-                return '解释与延展能力使读者能够理解文本的隐含信息，分析作者的思想感情和写作意图，并通过想象力拓展文本内容。';
+                return '解释与延展能力使读者能够理解文本的隐含信息，通过想象力拓展文本内容，体会思想感情，并分析写作意图。';
             case '鉴赏与评判':
-                return '鉴赏与评判能力让读者能够欣赏文本的语言和结构表达，并对文本内容进行评价。这是较高层次的阅读能力。';
+                return '鉴赏与评判能力让读者能够赏析形象、品析语言和评析结构，是较高层次的阅读能力。';
             case '创意与应用':
-                return '创意与应用是阅读能力的最高层次，包括将阅读所得转化为思维表达，以及运用阅读解决实际问题的能力。';
+                return '创意与应用是阅读能力的最高层次，包括复述、创意表达，以及运用阅读解决实际问题的能力。';
             default:
                 return '这是阅读能力体系的重要组成部分。';
         }
@@ -1427,11 +1520,14 @@ function getNodeDescription(node) {
             '梳理思路': '将文本信息进行分类整理，理清文本逻辑关系的能力。',
             '概括大意': '抓住文本主要内容，提炼中心思想的能力。',
             '理解隐含信息': '理解文本中未明确表达但暗含的信息和意义的能力。',
-            '分析思想感情或写作意图': '理解作者情感态度和写作目的的能力。',
             '想象拓展': '基于文本进行合理想象和延伸思考的能力。',
-            '鉴赏语言与结构表达': '欣赏和评价文本语言运用和结构安排的能力。',
-            '评价文本内容': '对文本内容进行分析、判断和评价的能力。',
-            '思维表达': '将阅读所得转化为个人思考和表达的能力。',
+            '体会思想感情': '感受和理解作者在文本中表达的情感和态度的能力。',
+            '分析写作意图': '理解作者写作目的和意图的能力。',
+            '赏析形象': '欣赏和分析文本中塑造的人物形象的能力。',
+            '品析语言': '欣赏和评价文本语言运用的能力。',
+            '评析结构': '分析和评价文本结构安排的能力。',
+            '复述': '用自己的话语复述文本内容的能力。',
+            '创意表达': '将阅读所得转化为个人创意表达的能力。',
             '解决问题': '运用阅读策略和方法解决实际问题的能力。'
         };
         return descriptions[node.name] || '这是阅读能力的重要组成部分。';
