@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我的阅读能力图谱</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: radial-gradient(ellipse at center, #0f0f23 0%, #000000 70%, #000000 100%);
+            font-family: 'Microsoft YaHei', Arial, sans-serif;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        /* 星空背景动画 */
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+        
+        .stars::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: transparent;
+            box-shadow: 
+                70vw 40vh 1px 1px #fff,
+                20vw 80vh 1px 1px #fff,
+                90vw 10vh 1px 1px #fff,
+                40vw 60vh 1px 1px #fff,
+                60vw 90vh 1px 1px #fff,
+                10vw 30vh 1px 1px #fff,
+                80vw 70vh 1px 1px #fff,
+                30vw 20vh 1px 1px #fff,
+                50vw 50vh 1px 1px #fff,
+                85vw 35vh 1px 1px #fff,
+                15vw 75vh 1px 1px #fff,
+                95vw 85vh 1px 1px #fff,
+                25vw 15vh 1px 1px #fff,
+                75vw 95vh 1px 1px #fff,
+                45vw 45vh 1px 1px #fff,
+                65vw 25vh 1px 1px #fff,
+                35vw 65vh 1px 1px #fff,
+                55vw 5vh 1px 1px #fff,
+                5vw 55vh 1px 1px #fff,
+                88vw 88vh 1px 1px #fff;
+            animation: twinkle 4s infinite;
+        }
+        
+        .stars::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: transparent;
+            box-shadow: 
+                22vw 12vh 2px 1px #4fc3f7,
+                78vw 42vh 2px 1px #4fc3f7,
+                33vw 78vh 2px 1px #4fc3f7,
+                67vw 23vh 2px 1px #4fc3f7,
+                89vw 67vh 2px 1px #4fc3f7,
+                11vw 89vh 2px 1px #4fc3f7,
+                44vw 34vh 2px 1px #4fc3f7,
+                56vw 56vh 2px 1px #4fc3f7,
+                77vw 77vh 2px 1px #4fc3f7,
+                23vw 43vh 2px 1px #4fc3f7;
+            animation: twinkle 6s infinite reverse;
+        }
+        
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
+        }
+        
+        /* 银河系旋转背景 */
+        .galaxy {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            width: 200vw;
+            height: 200vh;
+            transform: translate(-50%, -50%);
+            background: radial-gradient(ellipse at center, 
+                rgba(138, 43, 226, 0.1) 0%, 
+                rgba(30, 144, 255, 0.05) 30%, 
+                transparent 70%);
+            animation: rotate 120s linear infinite;
+            pointer-events: none;
+            z-index: 2;
+        }
+        
+        @keyframes rotate {
+            from { transform: translate(-50%, -50%) rotate(0deg); }
+            to { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+        
+        #graph-container {
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+            z-index: 10;
+        }
+        
+        .info-panel {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(15, 15, 35, 0.9);
+            color: #e0e0ff;
+            padding: 15px;
+            border-radius: 15px;
+            max-width: 300px;
+            z-index: 1000;
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(79, 195, 247, 0.3);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+        
+        .controls {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(15, 15, 35, 0.9);
+            color: #e0e0ff;
+            padding: 15px;
+            border-radius: 15px;
+            z-index: 1000;
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(79, 195, 247, 0.3);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+        
+        .control-button {
+            background: linear-gradient(45deg, #667eea 0%, #764ba2 100%);
+            border: 1px solid rgba(79, 195, 247, 0.5);
+            color: #e0e0ff;
+            padding: 10px 18px;
+            margin: 5px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.2);
+        }
+        
+        .control-button:hover {
+            background: linear-gradient(45deg, #764ba2 0%, #667eea 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+        
+        .title {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 24px;
+            font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            z-index: 100;
+            pointer-events: none;
+            opacity: 0.8;
+        }
+    </style>
+</head>
+<body>
+    <div class="stars"></div>
+    <div class="galaxy"></div>
+    <div id="graph-container"></div>
+    
+    <!-- <div class="title">我的阅读能力图谱</div> -->
+    
+    <div class="info-panel">
+        <h3>操作说明</h3>
+        <p>• 鼠标拖拽：旋转视角</p>
+        <p>• 滚轮：缩放</p>
+        <p>• 点击节点：高亮显示</p>
+        <p>• 右键拖拽：平移</p>
+    </div>
+    
+    <div class="controls">
+        <h3>控制面板</h3>
+        <button class="control-button" onclick="resetView()">重置视角</button>
+        <button class="control-button" onclick="toggleAnimation()">暂停/继续</button>
+        <button class="control-button" onclick="randomizePositions()">重新布局</button>
+    </div>
+
+    <script src="https://unpkg.com/three@0.152.0/build/three.min.js"></script>
+    <script src="https://unpkg.com/3d-force-graph@1.70.19/dist/3d-force-graph.min.js"></script>
+    <script src="https://unpkg.com/three-spritetext@1.8.1/dist/three-spritetext.min.js"></script>
+    <script>
+        // 定义图谱数据结构
+        const graphData = {
+            nodes: [
+                // 中心节点
+                { id: 'center', name: '我的阅读能力图谱', group: 0, val: 30 },
+                
+                // 一级能力分支
+                { id: 'decode', name: '解码与提取', group: 1, val: 25 },
+                { id: 'integrate', name: '整合与概括', group: 2, val: 25 },
+                { id: 'interpret', name: '解释与延展', group: 3, val: 25 },
+                { id: 'evaluate', name: '鉴赏与评判', group: 4, val: 25 },
+                { id: 'create', name: '创意与应用', group: 5, val: 25 },
+                
+                // 二级能力节点 - 解码与提取
+                { id: 'extract_info', name: '提取与筛选信息', group: 1, val: 18 },
+                { id: 'word_meaning', name: '理解字词本意', group: 1, val: 18 },
+                
+                // 二级能力节点 - 整合与概括
+                { id: 'organize_thought', name: '梳理思路', group: 2, val: 18 },
+                { id: 'summarize', name: '概括大意', group: 2, val: 18 },
+                
+                // 二级能力节点 - 解释与延展
+                { id: 'hidden_info', name: '理解隐含信息', group: 3, val: 18 },
+                { id: 'imagination', name: '想象拓展', group: 3, val: 18 },
+                { id: 'emotion', name: '体会思想感情', group: 3, val: 18 },
+                { id: 'writing_intent', name: '分析写作意图', group: 3, val: 18 },
+                
+                // 二级能力节点 - 鉴赏与评判
+                { id: 'analyze_character', name: '赏析形象', group: 4, val: 18 },
+                { id: 'analyze_language', name: '品析语言', group: 4, val: 18 },
+                { id: 'analyze_structure', name: '评析结构', group: 4, val: 18 },
+                
+                // 二级能力节点 - 创意与应用
+                { id: 'retell', name: '复述', group: 5, val: 18 },
+                { id: 'creative_expression', name: '创意表达', group: 5, val: 18 },
+                { id: 'solve_problem', name: '解决问题', group: 5, val: 18 },
+                
+                // 三级具体技能节点 - 提取与筛选信息
+                { id: 'extract_1', name: '借助外部提示，提取明显信息', group: 1, val: 12 },
+                { id: 'extract_2', name: '运用圈画，提取关键信息', group: 1, val: 12 },
+                { id: 'extract_3', name: '通过景物，提取关键信息', group: 1, val: 12 },
+                { id: 'extract_4', name: '按照叙述顺序，提取关键信息', group: 1, val: 12 },
+                { id: 'extract_5', name: '抓住事件要素，提取关键信息', group: 1, val: 12 },
+                
+                // 三级具体技能节点 - 理解字词本意
+                { id: 'word_1', name: '借助插图，理解字词句意思', group: 1, val: 12 },
+                { id: 'word_2', name: '通过文本外的演示，理解词语的意思', group: 1, val: 12 },
+                { id: 'word_3', name: '借助资料，理解字词句意思', group: 1, val: 12 },
+                { id: 'word_4', name: '联系上下文，理解字词句的意思', group: 1, val: 12 },
+                
+                // 三级具体技能节点 - 梳理思路
+                { id: 'organize_1', name: '借助关键信息，梳理思路', group: 2, val: 12 },
+                { id: 'organize_2', name: '根据人物，梳理思路', group: 2, val: 12 },
+                { id: 'organize_3', name: '借助图表，梳理思路', group: 2, val: 12 },
+                { id: 'organize_4', name: '根据时间顺序，梳理思路', group: 2, val: 12 },
+                { id: 'organize_5', name: '根据详略安排，梳理思路', group: 2, val: 12 },
+                
+                // 三级具体技能节点 - 概括大意
+                { id: 'summary_1', name: '借助插图，概括大意', group: 2, val: 12 },
+                { id: 'summary_2', name: '借助关键信息，概括大意', group: 2, val: 12 },
+                { id: 'summary_3', name: '借助图片，概括大意', group: 2, val: 12 },
+                { id: 'summary_4', name: '通过主要人物，概括大意', group: 2, val: 12 },
+                
+                // 三级具体技能节点 - 理解隐含信息
+                { id: 'hidden_1', name: '借助资料，理解字词句的隐含信息', group: 3, val: 12 },
+                { id: 'hidden_2', name: '联系上下文，理解字词句的隐含信息', group: 3, val: 12 },
+                { id: 'hidden_3', name: '结合生活经验，理解字词句的隐含信息', group: 3, val: 12 },
+                { id: 'hidden_4', name: '想象画面，理解字词句的隐含信息', group: 3, val: 12 },
+                
+                // 三级具体技能节点 - 想象拓展
+                { id: 'imagine_1', name: '借助关键信息，展开想象', group: 3, val: 12 },
+                { id: 'imagine_2', name: '联系生活经验，展开想象', group: 3, val: 12 },
+                { id: 'imagine_3', name: '根据景物，展开想象', group: 3, val: 12 },
+                
+                // 三级具体技能节点 - 体会思想感情
+                { id: 'emotion_1', name: '通过想象画面，体会思想感情', group: 3, val: 12 },
+                { id: 'emotion_2', name: '联系生活经验，体会思想感情', group: 3, val: 12 },
+                { id: 'emotion_3', name: '联系上下文，体会思想感情', group: 3, val: 12 },
+                { id: 'emotion_4', name: '通过描写，体会思想感情', group: 3, val: 12 },
+                
+                // 三级具体技能节点 - 分析写作意图
+                { id: 'intent_1', name: '联系生活经验，分析写作意图', group: 3, val: 12 },
+                { id: 'intent_2', name: '联系上下文，分析写作意图', group: 3, val: 12 },
+                { id: 'intent_3', name: '通过描写，分析写作意图', group: 3, val: 12 },
+                { id: 'intent_4', name: '抓住情节，分析写作意图', group: 3, val: 12 },
+                { id: 'intent_5', name: '抓住人物，分析写作意图', group: 3, val: 12 },
+                
+                // 三级具体技能节点 - 赏析形象
+                { id: 'character_1', name: '抓住对话，赏析形象', group: 4, val: 12 },
+                { id: 'character_2', name: '借助想象，赏析形象', group: 4, val: 12 },
+                { id: 'character_3', name: '通过提示语，赏析形象', group: 4, val: 12 },
+                { id: 'character_4', name: '抓住语言，赏析形象', group: 4, val: 12 },
+                { id: 'character_5', name: '抓住动作，赏析形象', group: 4, val: 12 },
+                { id: 'character_6', name: '抓住神态描写，赏析形象', group: 4, val: 12 },
+                
+                // 三级具体技能节点 - 品析语言
+                { id: 'language_1', name: '通过比较阅读，品析语言', group: 4, val: 12 },
+                { id: 'language_2', name: '通过修辞手法，品析语言', group: 4, val: 12 },
+                { id: 'language_3', name: '通过体会词句，品析语言', group: 4, val: 12 },
+                { id: 'language_4', name: '通过表达方法，品析语言', group: 4, val: 12 },
+                { id: 'language_5', name: '通过表现手法，品析语言', group: 4, val: 12 },
+                
+                // 三级具体技能节点 - 评析结构
+                { id: 'structure_1', name: '通过详略结构评析', group: 4, val: 12 },
+                { id: 'structure_2', name: '通过写作顺序评析', group: 4, val: 12 },
+                { id: 'structure_3', name: '通过逻辑关系评析', group: 4, val: 12 },
+                { id: 'structure_4', name: '通过句式结构评析', group: 4, val: 12 },
+                
+                // 三级具体技能节点 - 复述
+                { id: 'retell_1', name: '借助图片', group: 5, val: 12 },
+                { id: 'retell_2', name: '变换口吻', group: 5, val: 12 },
+                { id: 'retell_3', name: '添加情节、对话等', group: 5, val: 12 },
+                { id: 'retell_4', name: '模仿人物的动作、表情', group: 5, val: 12 },
+                { id: 'retell_5', name: '综合训练学过的方法', group: 5, val: 12 },
+                
+                // 三级具体技能节点 - 创意表达
+                { id: 'express_1', name: '运用积累的词语，进行表达', group: 5, val: 12 },
+                { id: 'express_2', name: '从不同方面写特点，进行表达', group: 5, val: 12 },
+                { id: 'express_3', name: '围绕关键句，进行表达', group: 5, val: 12 },
+                { id: 'express_4', name: '按顺序写事，进行表达', group: 5, val: 12 },
+                
+                // 三级具体技能节点 - 解决问题
+                { id: 'solve_1', name: '通过文本内容，解决问题', group: 5, val: 12 },
+                { id: 'solve_2', name: '运用阅读中获得的思维方法，解决问题', group: 5, val: 12 },
+                { id: 'solve_3', name: '通过信息加工，解决问题', group: 5, val: 12 },
+                { id: 'solve_4', name: '通过查找资料，解决问题', group: 5, val: 12 }
+            ],
+            links: [
+                // 中心到一级分支
+                { source: 'center', target: 'decode' },
+                { source: 'center', target: 'integrate' },
+                { source: 'center', target: 'interpret' },
+                { source: 'center', target: 'evaluate' },
+                { source: 'center', target: 'create' },
+                
+                // 一级到二级节点
+                { source: 'decode', target: 'extract_info' },
+                { source: 'decode', target: 'word_meaning' },
+                { source: 'integrate', target: 'organize_thought' },
+                { source: 'integrate', target: 'summarize' },
+                { source: 'interpret', target: 'hidden_info' },
+                { source: 'interpret', target: 'imagination' },
+                { source: 'interpret', target: 'emotion' },
+                { source: 'interpret', target: 'writing_intent' },
+                { source: 'evaluate', target: 'analyze_character' },
+                { source: 'evaluate', target: 'analyze_language' },
+                { source: 'evaluate', target: 'analyze_structure' },
+                { source: 'create', target: 'retell' },
+                { source: 'create', target: 'creative_expression' },
+                { source: 'create', target: 'solve_problem' },
+                
+                // 二级到三级节点
+                { source: 'extract_info', target: 'extract_1' },
+                { source: 'extract_info', target: 'extract_2' },
+                { source: 'extract_info', target: 'extract_3' },
+                { source: 'extract_info', target: 'extract_4' },
+                { source: 'extract_info', target: 'extract_5' },
+                { source: 'word_meaning', target: 'word_1' },
+                { source: 'word_meaning', target: 'word_2' },
+                { source: 'word_meaning', target: 'word_3' },
+                { source: 'word_meaning', target: 'word_4' },
+                { source: 'organize_thought', target: 'organize_1' },
+                { source: 'organize_thought', target: 'organize_2' },
+                { source: 'organize_thought', target: 'organize_3' },
+                { source: 'organize_thought', target: 'organize_4' },
+                { source: 'organize_thought', target: 'organize_5' },
+                { source: 'summarize', target: 'summary_1' },
+                { source: 'summarize', target: 'summary_2' },
+                { source: 'summarize', target: 'summary_3' },
+                { source: 'summarize', target: 'summary_4' },
+                { source: 'hidden_info', target: 'hidden_1' },
+                { source: 'hidden_info', target: 'hidden_2' },
+                { source: 'hidden_info', target: 'hidden_3' },
+                { source: 'hidden_info', target: 'hidden_4' },
+                { source: 'imagination', target: 'imagine_1' },
+                { source: 'imagination', target: 'imagine_2' },
+                { source: 'imagination', target: 'imagine_3' },
+                { source: 'emotion', target: 'emotion_1' },
+                { source: 'emotion', target: 'emotion_2' },
+                { source: 'emotion', target: 'emotion_3' },
+                { source: 'emotion', target: 'emotion_4' },
+                { source: 'writing_intent', target: 'intent_1' },
+                { source: 'writing_intent', target: 'intent_2' },
+                { source: 'writing_intent', target: 'intent_3' },
+                { source: 'writing_intent', target: 'intent_4' },
+                { source: 'writing_intent', target: 'intent_5' },
+                { source: 'analyze_character', target: 'character_1' },
+                { source: 'analyze_character', target: 'character_2' },
+                { source: 'analyze_character', target: 'character_3' },
+                { source: 'analyze_character', target: 'character_4' },
+                { source: 'analyze_character', target: 'character_5' },
+                { source: 'analyze_character', target: 'character_6' },
+                { source: 'analyze_language', target: 'language_1' },
+                { source: 'analyze_language', target: 'language_2' },
+                { source: 'analyze_language', target: 'language_3' },
+                { source: 'analyze_language', target: 'language_4' },
+                { source: 'analyze_language', target: 'language_5' },
+                { source: 'analyze_structure', target: 'structure_1' },
+                { source: 'analyze_structure', target: 'structure_2' },
+                { source: 'analyze_structure', target: 'structure_3' },
+                { source: 'analyze_structure', target: 'structure_4' },
+                { source: 'retell', target: 'retell_1' },
+                { source: 'retell', target: 'retell_2' },
+                { source: 'retell', target: 'retell_3' },
+                { source: 'retell', target: 'retell_4' },
+                { source: 'retell', target: 'retell_5' },
+                { source: 'creative_expression', target: 'express_1' },
+                { source: 'creative_expression', target: 'express_2' },
+                { source: 'creative_expression', target: 'express_3' },
+                { source: 'creative_expression', target: 'express_4' },
+                { source: 'solve_problem', target: 'solve_1' },
+                { source: 'solve_problem', target: 'solve_2' },
+                { source: 'solve_problem', target: 'solve_3' },
+                { source: 'solve_problem', target: 'solve_4' }
+            ]
+        };
+
+        // 定义星系主题颜色方案
+        const colors = {
+            0: '#ffffff', // 中心节点 - 纯白星核
+            1: '#ff6b9d', // 解码与提取 - 粉红星云
+            2: '#4fc3f7', // 品析语言 - 天蓝星光
+            3: '#81c784', // 创意与应用 - 翠绿星辰
+            4: '#ffb74d', // 整合与概括 - 橙黄星团
+            5: '#ba68c8', // 解释与推论 - 紫罗兰星系
+            6: '#64b5f6'  // 评析形象 - 深蓝星海
+        };
+
+        // 创建3D力导向图
+        const Graph = ForceGraph3D()
+            (document.getElementById('graph-container'))
+            .graphData(graphData)
+            .nodeLabel('name')
+            .nodeVal('val')
+            .nodeColor(node => colors[node.group] || '#cccccc')
+            .nodeOpacity(0.9)
+            .linkColor(() => 'rgba(79,195,247,0.4)')
+            .linkWidth(1.5)
+            .linkOpacity(0.7)
+            .backgroundColor('rgba(0,0,0,0)')
+            .showNavInfo(false)
+            .enableNodeDrag(true)
+            .enableNavigationControls(true)
+            .onNodeClick(node => {
+                // 节点点击高亮效果
+                highlightNode(node);
+            })
+            .onNodeHover(node => {
+                // 鼠标悬停效果
+                document.body.style.cursor = node ? 'pointer' : null;
+            })
+            .nodeThreeObject(node => {
+                // 创建球体几何体
+                const geometry = new THREE.SphereGeometry(node.val * 0.8, 16, 16);
+                const material = new THREE.MeshLambertMaterial({ 
+                    color: colors[node.group] || '#cccccc',
+                    transparent: true,
+                    opacity: 0.9
+                });
+                const sphere = new THREE.Mesh(geometry, material);
+                
+                // 添加文字标签
+                const sprite = new SpriteText(node.name);
+                sprite.material.depthWrite = false;
+                sprite.material.depthTest = false;
+                sprite.renderOrder = 999;
+                sprite.color = '#e0e0ff';
+                sprite.textHeight = Math.max(4, node.val * 0.3);
+                sprite.backgroundColor = 'rgba(15,15,35,0.9)';
+                sprite.padding = 3;
+                sprite.borderRadius = 5;
+                sprite.position.y = node.val * 1.2;
+                
+                // 创建组合对象
+                const group = new THREE.Group();
+                group.add(sphere);
+                group.add(sprite);
+                
+                return group;
+            })
+            .nodeThreeObjectExtend(true);
+
+        // 添加光源
+        const scene = Graph.scene();
+        const ambientLight = new THREE.AmbientLight(0x404040, 0.6);
+        scene.add(ambientLight);
+        const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+        directionalLight.position.set(100, 100, 100);
+        scene.add(directionalLight);
+        
+        // 设置初始相机位置（更远的距离以显示全局视图）
+        Graph.cameraPosition({ x: 0, y: 0, z: 800 });
+
+        // 节点高亮功能
+        let highlightedNode = null;
+        let highlightedLinks = new Set();
+        
+        function highlightNode(node) {
+            // 重置之前的高亮
+            if (highlightedNode) {
+                const prevNodeObj = Graph.getGraphData().nodes.find(n => n.id === highlightedNode.id);
+                if (prevNodeObj && prevNodeObj.__threeObj) {
+                    const sphere = prevNodeObj.__threeObj.children[0];
+                    if (sphere && sphere.material) {
+                        sphere.material.color.setHex(parseInt(colors[prevNodeObj.group].replace('#', '0x')));
+                        sphere.material.emissive.setHex(0x000000);
+                    }
+                }
+            }
+            
+            // 重置连接线高亮
+            highlightedLinks.forEach(link => {
+                Graph.linkColor(link, 'rgba(79,195,247,0.4)');
+            });
+            highlightedLinks.clear();
+            
+            if (node && node !== highlightedNode) {
+                // 高亮新节点
+                if (node.__threeObj) {
+                    const sphere = node.__threeObj.children[0];
+                    if (sphere && sphere.material) {
+                        sphere.material.color.setHex(0x00ffff);
+                        sphere.material.emissive.setHex(0x004444);
+                    }
+                }
+                
+                // 高亮相关连接线
+                const relatedLinks = Graph.getGraphData().links.filter(link => 
+                    link.source.id === node.id || link.target.id === node.id
+                );
+                relatedLinks.forEach(link => {
+                    Graph.linkColor(link, 'rgba(0,255,255,0.9)');
+                    highlightedLinks.add(link);
+                });
+                
+                highlightedNode = node;
+                showNodeInfo(node);
+            } else {
+                highlightedNode = null;
+            }
+        }
+
+        // 显示节点信息
+        function showNodeInfo(node) {
+            const infoPanel = document.querySelector('.info-panel');
+            infoPanel.innerHTML = `
+                <h3>节点信息</h3>
+                <p><strong>名称:</strong> ${node.name}</p>
+                <p><strong>类型:</strong> ${getNodeType(node.group)}</p>
+                <p><strong>重要度:</strong> ${node.val}</p>
+                <p><strong>ID:</strong> ${node.id}</p>
+            `;
+        }
+
+        // 获取节点类型
+        function getNodeType(group) {
+            const types = {
+                0: '核心能力',
+                1: '解码提取',
+                2: '语言分析',
+                3: '创意应用',
+                4: '整合概括',
+                5: '解释推论',
+                6: '评析鉴赏'
+            };
+            return types[group] || '其他';
+        }
+
+        // 控制函数
+        function resetView() {
+            Graph.cameraPosition({ x: 0, y: 0, z: 400 }, { x: 0, y: 0, z: 0 }, 1000);
+        }
+
+        let isAnimationPaused = false;
+        function toggleAnimation() {
+            if (isAnimationPaused) {
+                Graph.resumeAnimation();
+                isAnimationPaused = false;
+            } else {
+                Graph.pauseAnimation();
+                isAnimationPaused = true;
+            }
+        }
+
+        function randomizePositions() {
+            Graph.refresh();
+        }
+
+        // 添加键盘控制
+        document.addEventListener('keydown', (event) => {
+            switch(event.key) {
+                case 'r':
+                case 'R':
+                    resetView();
+                    break;
+                case ' ':
+                    event.preventDefault();
+                    toggleAnimation();
+                    break;
+                case 'n':
+                case 'N':
+                    randomizePositions();
+                    break;
+            }
+        });
+
+        // 初始化完成后的设置
+        setTimeout(() => {
+            // 设置初始力的强度
+            Graph.d3Force('charge').strength(-500);
+            Graph.d3Force('link').distance(80);
+            Graph.d3Force('center').strength(0.1);
+            
+            // 添加一些随机的初始速度
+            graphData.nodes.forEach(node => {
+                node.vx = (Math.random() - 0.5) * 20;
+                node.vy = (Math.random() - 0.5) * 20;
+                node.vz = (Math.random() - 0.5) * 20;
+            });
+            
+            // 启动动画
+            Graph.refresh();
+        }, 1500);
+
+        // 响应式设计
+        window.addEventListener('resize', () => {
+            Graph.width(window.innerWidth).height(window.innerHeight);
+        });
+    </script>
+</body>
+</html>
