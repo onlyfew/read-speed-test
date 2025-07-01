@@ -439,7 +439,23 @@
             .nodeVal('val')
             .nodeColor(node => colors[node.group] || '#cccccc')
             .nodeOpacity(0.9)
-            .linkColor(() => 'rgba(79,195,247,0.4)')
+            .linkColor(link => {
+                const sourceNode = graphData.nodes.find(n => n.id === link.source.id || n.id === link.source);
+                const targetNode = graphData.nodes.find(n => n.id === link.target.id || n.id === link.target);
+                
+                // 使用源节点的颜色，如果源节点是中心节点，则使用目标节点的颜色
+                const nodeColor = sourceNode && sourceNode.group === 0 ? 
+                    (colors[targetNode?.group] || '#cccccc') : 
+                    (colors[sourceNode?.group] || '#cccccc');
+                
+                // 将十六进制颜色转换为rgba格式，添加透明度
+                const hex = nodeColor.replace('#', '');
+                const r = parseInt(hex.substr(0, 2), 16);
+                const g = parseInt(hex.substr(2, 2), 16);
+                const b = parseInt(hex.substr(4, 2), 16);
+                
+                return `rgba(${r},${g},${b},0.4)`;
+            })
             .linkWidth(1.5)
             .linkOpacity(0.7)
             .backgroundColor('rgba(0,0,0,0)')
@@ -447,8 +463,8 @@
             .enableNodeDrag(true)
             .enableNavigationControls(true)
             .onNodeClick(node => {
-                // 节点点击高亮效果
-                highlightNode(node);
+                // 简单显示节点信息
+                showNodeInfo(node);
             })
             .onNodeHover(node => {
                 // 鼠标悬停效果
@@ -476,10 +492,19 @@
                 sprite.borderRadius = 5;
                 sprite.position.y = node.val * 1.2;
                 
+                // 根据节点类型和缩放级别控制标签显示
+                // 末级节点（val=12）默认隐藏标签
+                if (node.val === 12) {
+                    sprite.visible = false;
+                }
+                
                 // 创建组合对象
                 const group = new THREE.Group();
                 group.add(sphere);
                 group.add(sprite);
+                
+                // 存储sprite引用以便后续控制
+                group.userData = { sprite: sprite, isLeafNode: node.val === 12 };
                 
                 return group;
             })
@@ -496,54 +521,7 @@
         // 设置初始相机位置（更远的距离以显示全局视图）
         Graph.cameraPosition({ x: 0, y: 0, z: 800 });
 
-        // 节点高亮功能
-        let highlightedNode = null;
-        let highlightedLinks = new Set();
-        
-        function highlightNode(node) {
-            // 重置之前的高亮
-            if (highlightedNode) {
-                const prevNodeObj = Graph.getGraphData().nodes.find(n => n.id === highlightedNode.id);
-                if (prevNodeObj && prevNodeObj.__threeObj) {
-                    const sphere = prevNodeObj.__threeObj.children[0];
-                    if (sphere && sphere.material) {
-                        sphere.material.color.setHex(parseInt(colors[prevNodeObj.group].replace('#', '0x')));
-                        sphere.material.emissive.setHex(0x000000);
-                    }
-                }
-            }
-            
-            // 重置连接线高亮
-            highlightedLinks.forEach(link => {
-                Graph.linkColor(link, 'rgba(79,195,247,0.4)');
-            });
-            highlightedLinks.clear();
-            
-            if (node && node !== highlightedNode) {
-                // 高亮新节点
-                if (node.__threeObj) {
-                    const sphere = node.__threeObj.children[0];
-                    if (sphere && sphere.material) {
-                        sphere.material.color.setHex(0x00ffff);
-                        sphere.material.emissive.setHex(0x004444);
-                    }
-                }
-                
-                // 高亮相关连接线
-                const relatedLinks = Graph.getGraphData().links.filter(link => 
-                    link.source.id === node.id || link.target.id === node.id
-                );
-                relatedLinks.forEach(link => {
-                    Graph.linkColor(link, 'rgba(0,255,255,0.9)');
-                    highlightedLinks.add(link);
-                });
-                
-                highlightedNode = node;
-                showNodeInfo(node);
-            } else {
-                highlightedNode = null;
-            }
-        }
+
 
         // 显示节点信息
         function showNodeInfo(node) {
@@ -611,21 +589,37 @@
 
         // 初始化完成后的设置
         setTimeout(() => {
-            // 设置初始力的强度
-            Graph.d3Force('charge').strength(-500);
-            Graph.d3Force('link').distance(80);
-            Graph.d3Force('center').strength(0.1);
+            // 设置初始力的强度（减少散开程度）
+            Graph.d3Force('charge').strength(-200);
+            Graph.d3Force('link').distance(50);
+            Graph.d3Force('center').strength(0.3);
             
-            // 添加一些随机的初始速度
+            // 添加一些随机的初始速度（减小幅度）
             graphData.nodes.forEach(node => {
-                node.vx = (Math.random() - 0.5) * 20;
-                node.vy = (Math.random() - 0.5) * 20;
-                node.vz = (Math.random() - 0.5) * 20;
+                node.vx = (Math.random() - 0.5) * 10;
+                node.vy = (Math.random() - 0.5) * 10;
+                node.vz = (Math.random() - 0.5) * 10;
             });
             
             // 启动动画
             Graph.refresh();
         }, 1500);
+        
+        // 监听相机位置变化，控制末级节点标签显示
+        Graph.onEngineStop(() => {
+            const camera = Graph.camera();
+            const cameraDistance = camera.position.distanceTo(new THREE.Vector3(0, 0, 0));
+            
+            // 当相机距离小于400时显示末级节点标签
+            const showLeafLabels = cameraDistance < 400;
+            
+            // 使用graphData而不是Graph.getGraphData()
+            graphData.nodes.forEach(node => {
+                if (node.__threeObj && node.__threeObj.userData.isLeafNode) {
+                    node.__threeObj.userData.sprite.visible = showLeafLabels;
+                }
+            });
+        });
 
         // 响应式设计
         window.addEventListener('resize', () => {
